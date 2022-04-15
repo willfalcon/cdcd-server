@@ -1,0 +1,4 @@
+node_modules
+errStdErr.txt
+normalStdout.txt
+.env
