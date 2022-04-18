@@ -18,6 +18,7 @@ async function startApolloServer(typeDefs, resolvers) {
     cors: {
       // origin: '*',
       origin: ['http://localhost:3000', 'https://cdcd.creativedistillery.com'],
+      credentials: true,
     },
   });
   const { url } = await server.listen();
