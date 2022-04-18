@@ -1,4 +1,7 @@
-import { ApolloServer } from 'apollo-server';
+import { ApolloServer } from 'apollo-server-express';
+import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
+import express from 'express';
+import http from 'http';
 
 import { Console } from 'console';
 import fs from 'fs';
@@ -12,17 +15,25 @@ const logger = new Console({
 });
 
 async function startApolloServer(typeDefs, resolvers) {
+  const app = express();
+  const httpServer = http.createServer(app);
+
   const server = new ApolloServer({
     typeDefs,
     resolvers,
+    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+  });
+  await server.start();
+  server.applyMiddleware({
+    app,
     cors: {
       // origin: '*',
       origin: ['http://localhost:3000', 'https://cdcd.creativedistillery.com'],
       credentials: true,
     },
   });
-  const { url } = await server.listen();
-  console.log(`🚀 Server ready at ${url}`);
+  await new Promise(resolve => httpServer.listen({ port: 4000 }, resolve));
+  console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`);
 }
 
 startApolloServer(typeDefs, resolvers);

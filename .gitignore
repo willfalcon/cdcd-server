@@ -2,3 +2,4 @@ node_modules
 errStdErr.txt
 normalStdout.txt
 .env
+.DS_Store
